@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Calculatrice"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="500">
+        Title="MainWindow" Height="600" Width="500" KeyUp="Event_KeyUp">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -16,11 +16,27 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <ListBox Grid.Row="0" ItemsSource="{Binding ListeOperations}" Height="118" Margin="10,10,10,0"/>
-            <TextBox Text="{Binding Saisie}" Grid.Row="1" Margin="10,0,10,10" Height="30"/>
+            <ListBox Grid.Row="0" ItemsSource="{Binding ListeOperations}" Height="118" Margin="10,10,10,0" HorizontalContentAlignment="Stretch" SelectionChanged="ListBox_SelectionChanged" LostFocus="ListBox_FocusLost">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="{Binding Entree}" HorizontalAlignment="Stretch" />
+                            <TextBlock Grid.Row="1" Text="{Binding Resultat}" HorizontalAlignment="Right" FontWeight="Bold" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ListBox>
+            <Border Grid.Row="1" Margin="10,0,10,10" Height="30" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                <Label Content="{Binding Saisie}" />
+            </Border>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -34,30 +50,31 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Row="0" Grid.Column="0" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="0" Grid.Column="1" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="0" Grid.Column="2" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="0" Grid.Column="3" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="1" Grid.Column="0" Content="(" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="1" Grid.Column="1" Content=")" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="1" Grid.Column="2" Content="Clear" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="1" Grid.Column="3" Content="Rep" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="2" Grid.Column="0" Content="7" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="2" Grid.Column="1" Content="8" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="2" Grid.Column="2" Content="9" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="2" Grid.Column="3" Content="/" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="3" Grid.Column="0" Content="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="3" Grid.Column="1" Content="5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="3" Grid.Column="2" Content="6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="3" Grid.Column="3" Content="x" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="4" Grid.Column="0" Content="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="4" Grid.Column="1" Content="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="4" Grid.Column="2" Content="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="4" Grid.Column="3" Content="+" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="5" Grid.Column="0" Content="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="5" Grid.Column="1" Content="," HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
-            <Button Grid.Row="5" Grid.Column="2" Content="=" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="5" Grid.Column="3" Content="-" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50"/>
+            <Button Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Content="&lt;" HorizontalAlignment="Center" VerticalAlignment="Center" Width="220" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="1" Grid.Column="0" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="1" Grid.Column="2" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="1" Grid.Column="3" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="2" Grid.Column="0" Content="(" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="2" Grid.Column="1" Content=")" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="2" Grid.Column="2" Content="Clear" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="2" Grid.Column="3" Content="Rep" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="3" Grid.Column="0" Content="7" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="3" Grid.Column="1" Content="8" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="3" Grid.Column="2" Content="9" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="3" Grid.Column="3" Content="/" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="4" Grid.Column="0" Content="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="4" Grid.Column="1" Content="5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="4" Grid.Column="2" Content="6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="4" Grid.Column="3" Content="x" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="5" Grid.Column="0" Content="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="5" Grid.Column="1" Content="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="5" Grid.Column="2" Content="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="5" Grid.Column="3" Content="+" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="6" Grid.Column="0" Content="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="6" Grid.Column="1" Content="," HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="6" Grid.Column="2" Content="=" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="6" Grid.Column="3" Content="-" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
         </Grid>
     </Grid>
 </Window>
