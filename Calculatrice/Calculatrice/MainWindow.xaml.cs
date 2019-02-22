@@ -61,11 +61,38 @@ namespace Calculatrice
             }
         }
 
-        private String[] simpleEntries = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "-", "+", "/", "x", "(", ")" };
+        private Window GetParentWindow( DependencyObject child)
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            if(parentObject == null)
+            {
+                return null;
+            }
+
+            Window parent = parentObject as Window;
+            if(parent == null)
+            {
+                return parent;
+            }
+            else
+            {
+                return GetParentWindow(parentObject);
+            }
+        }
+
+        private void resetFocus(FrameworkElement element)
+        {
+            var scope = FocusManager.GetFocusScope(element);
+            FocusManager.SetFocusedElement(scope, null);
+            Keyboard.Focus(GetParentWindow(element));
+        }
+
+        private String[] simpleEntries = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "-", "+", "/", "(", ")" };
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button sourceButton = (Button)sender;
+            resetFocus(sourceButton);
             string buttonContent = sourceButton.Content.ToString();
             if (string.IsNullOrEmpty(Saisie))
             {
@@ -89,6 +116,10 @@ namespace Calculatrice
                         Saisie = "";
                     }
                 }
+                else if (buttonContent.Equals("x"))
+                {
+                    Saisie += "*";
+                }
                 else if (buttonContent.Equals("Rep"))
                 {
                     if(ListeOperations.Count != 0)
@@ -104,10 +135,27 @@ namespace Calculatrice
                 }
                 else if (buttonContent.Equals("<"))
                 {
-                    if (Saisie.Length > 0)
-                    {
-                        Saisie = Saisie.Substring(0, Saisie.Length - 1);
-                    }
+                    erase();
+                }
+                else if (buttonContent.Equals("sin (s)"))
+                {
+                    Saisie += "sin(";
+                }
+                else if (buttonContent.Equals("cos (c)"))
+                {
+                    Saisie += "cos(";
+                }
+                else if (buttonContent.Equals("√ (r)"))
+                {
+                    Saisie += "√(";
+                }
+                else if (buttonContent.Equals("exp (e)"))
+                {
+                    Saisie += "exp(";
+                }
+                else if (buttonContent.Equals("ln (l)"))
+                {
+                    Saisie += "ln(";
                 }
             }
         }
@@ -129,7 +177,59 @@ namespace Calculatrice
             listBox.UnselectAll();
         }
 
-        private Key[] validKeyslist = { Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4, Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9, Key.Divide, Key.Multiply, Key.Subtract, Key.Add, Key.Return, Key.Decimal, Key.D5, Key.OemOpenBrackets };
+        private void erase()
+        {
+            int length = Saisie.Length;
+
+            if (length > 3)
+            {
+                //"sin(" "cos(" "exp("
+                char avantDernierChar = Saisie.ElementAt(Saisie.Length - 2);
+                if(avantDernierChar == 'n' || avantDernierChar == 's' || avantDernierChar == 'p')
+                {
+                    Saisie = Saisie.Substring(0, Saisie.Length - 4);
+                }
+                else
+                {
+                    Saisie = Saisie.Substring(0, Saisie.Length - 1);
+                }
+
+            }
+            else if (length > 2)
+            {
+                //"ln("
+                char avantDernierChar = Saisie.ElementAt(Saisie.Length - 2);
+                if (avantDernierChar == 'n')
+                {
+                    Saisie = Saisie.Substring(0, Saisie.Length - 3);
+                }
+                else
+                {
+                    Saisie = Saisie.Substring(0, Saisie.Length - 1);
+                }
+            }
+            else if (length > 1)
+            {
+                //"√("
+                char avantDernierChar = Saisie.ElementAt(Saisie.Length - 2);
+                if (avantDernierChar == '√')
+                {
+                    Saisie = Saisie.Substring(0, Saisie.Length - 2);
+                }
+                else
+                {
+                    Saisie = Saisie.Substring(0, Saisie.Length - 1);
+                }
+
+            }
+            else if (length > 0)
+            {
+                //"^" "[0-9]"
+                Saisie = Saisie.Substring(0, Saisie.Length - 1);
+            }
+        }
+
+        private Key[] validKeyslist = { Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4, Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9, Key.Divide, Key.Multiply, Key.Subtract, Key.Add, Key.Return, Key.Decimal, Key.D5, Key.OemOpenBrackets, Key.Back, Key.S, Key.C, Key.R, Key.E, Key.L};
 
         private void TranslateKeyPress(Key key)
         {
@@ -173,7 +273,22 @@ namespace Calculatrice
                     Saisie += ")";
                     break;
                 case 18:
-                    Saisie = Saisie.Substring(0, Saisie.Length - 1);
+                    erase();
+                    break;
+                case 19:
+                    Saisie += "sin(";
+                    break;
+                case 20:
+                    Saisie += "cos(";
+                    break;
+                case 21:
+                    Saisie += "√(";
+                    break;
+                case 22:
+                    Saisie += "exp(";
+                    break;
+                case 23:
+                    Saisie += "ln(";
                     break;
                 default:
                     Saisie += "";
@@ -182,8 +297,12 @@ namespace Calculatrice
         }
         private void Event_KeyUp(object sender, KeyEventArgs e)
         {
+            if (string.IsNullOrEmpty(Saisie))
+            {
+                Saisie = "";
+            }
             TranslateKeyPress(e.Key);
-            Console.WriteLine(e.Key.ToString());
+            //Console.WriteLine(e.Key.ToString());
         }
 
         private bool isANumber(char c)

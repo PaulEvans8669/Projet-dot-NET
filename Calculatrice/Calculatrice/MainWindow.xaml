@@ -5,18 +5,91 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Calculatrice"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="500" KeyUp="Event_KeyUp">
+        Title="MainWindow" Height="793" Width="500" KeyUp="Event_KeyUp" ResizeMode="CanMinimize" Background="White">
+    <Window.Resources>
+
+        <Style TargetType="Button" x:Key="mainButtonStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.6" />
+                            </Trigger>
+                            <Trigger Property="Button.IsFocused" Value="True">
+                                <Setter Property="Background" Value="#62868C" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Background" Value="#8EC3CC"/>
+            <Setter Property="BorderThickness" Value="0,0,0,0"/>
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="FontFamily" Value="Source Sans Pro Black"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+
+        <Style TargetType="Button" x:Key="numberButtonStyle" BasedOn="{StaticResource mainButtonStyle}">
+            <Setter Property="Background" Value="#A2DEE8"/>
+        </Style>
+
+        <Style TargetType="Button" x:Key="wideButtonStyle" BasedOn="{StaticResource mainButtonStyle}">
+            <Setter Property="Width" Value="222"/>
+        </Style>
+
+        <Style TargetType="Border" x:Key="inputBoxStyle" >
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="10,0,10,10"/>
+            <Setter Property="Background" Value="#A2DEE8"/>
+            <Setter Property="BorderBrush" Value="Gainsboro"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Grid.ColumnSpan" Value="2"/>
+        </Style>
+
+        <Style TargetType="ListBox" x:Key="historyBoxStyle" >
+            <Setter Property="Height" Value="118"/>
+            <Setter Property="Margin" Value="10,10,10,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="#FF81B1B9"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Grid.ColumnSpan" Value="2"/>
+        </Style>
+
+        <Style TargetType="ListBoxItem" x:Key="historyBoxItemStyle">
+            <Setter Property="Background" Value="Green"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Opacity" Value="0.5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Margin="0,0,0,528" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="31*"/>
+                <ColumnDefinition Width="215*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <ListBox Grid.Row="0" ItemsSource="{Binding ListeOperations}" Height="118" Margin="10,10,10,0" HorizontalContentAlignment="Stretch" SelectionChanged="ListBox_SelectionChanged" LostFocus="ListBox_FocusLost">
+            <ListBox Grid.Row="0" Style="{StaticResource historyBoxStyle}" ItemsSource="{Binding ListeOperations}" ItemContainerStyle="{StaticResource historyBoxItemStyle}"  SelectionChanged="ListBox_SelectionChanged" LostFocus="ListBox_FocusLost" Height="Auto" Margin="10,10,10,0">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -30,12 +103,13 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ListBox>
-            <Border Grid.Row="1" Margin="10,0,10,10" Height="30" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
-                <Label Content="{Binding Saisie}" />
+            <Border Grid.Row="1" Style="{StaticResource inputBoxStyle}" >
+                <Label Content="{Binding Saisie}"/>
             </Border>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="0,0,0,10" Height="518" VerticalAlignment="Bottom">
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -50,31 +124,35 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Content="&lt;" HorizontalAlignment="Center" VerticalAlignment="Center" Width="220" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="1" Grid.Column="0" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="1" Grid.Column="1" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="1" Grid.Column="2" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="1" Grid.Column="3" Content="*" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="2" Grid.Column="0" Content="(" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="2" Grid.Column="1" Content=")" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="2" Grid.Column="2" Content="Clear" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="2" Grid.Column="3" Content="Rep" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="3" Grid.Column="0" Content="7" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="3" Grid.Column="1" Content="8" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="3" Grid.Column="2" Content="9" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="3" Grid.Column="3" Content="/" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="4" Grid.Column="0" Content="4" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="4" Grid.Column="1" Content="5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="4" Grid.Column="2" Content="6" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="4" Grid.Column="3" Content="x" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="5" Grid.Column="0" Content="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="5" Grid.Column="1" Content="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="5" Grid.Column="2" Content="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="5" Grid.Column="3" Content="+" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="6" Grid.Column="0" Content="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="6" Grid.Column="1" Content="," HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="6" Grid.Column="2" Content="=" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
-            <Button Grid.Row="6" Grid.Column="3" Content="-" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="50" Click="Button_Click"/>
+            <Button Grid.Row="0" Grid.Column="2" Content="&lt;" Style="{StaticResource wideButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="1" Grid.Column="0" Content="sin (s)" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="1" Grid.Column="1" Content="cos (c)" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="1" Grid.Column="2" Content="*" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="1" Grid.Column="4" Content="*" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="2" Grid.Column="0" Content="^" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="2" Grid.Column="1" Content="√ (r)" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="2" Grid.Column="2" Content="exp (e)" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="2" Grid.Column="4" Content="ln (l)" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="3" Grid.Column="0" Content="(" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="3" Grid.Column="1" Content=")" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="3" Grid.Column="2" Content="Clear" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="3" Grid.Column="4" Content="Rep" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="4" Grid.Column="0" Content="7" Style="{StaticResource numberButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="4" Grid.Column="1" Content="8" Style="{StaticResource numberButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="4" Grid.Column="2" Content="9" Style="{StaticResource numberButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="4" Grid.Column="4" Content="/" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="5" Grid.Column="0" Content="4" Style="{StaticResource numberButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="5" Grid.Column="1" Content="5" Style="{StaticResource numberButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="5" Grid.Column="2" Content="6" Style="{StaticResource numberButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="5" Grid.Column="4" Content="x" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="6" Grid.Column="0" Content="1" Style="{StaticResource numberButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="6" Grid.Column="1" Content="2" Style="{StaticResource numberButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="6" Grid.Column="2" Content="3" Style="{StaticResource numberButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="6" Grid.Column="4" Content="+" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="7" Grid.Column="0" Content="," Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="7" Grid.Column="1" Content="0" Style="{StaticResource numberButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="7" Grid.Column="2" Content="=" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="7" Grid.Column="4" Content="-" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
         </Grid>
     </Grid>
 </Window>
