@@ -1,24 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Calculatrice
 {
-    
+
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
 
@@ -131,7 +123,7 @@ namespace Calculatrice
             }
             if (simpleEntries.Contains(buttonContent))
             {
-                
+
                 Saisie += buttonContent;
             }
             else
@@ -153,7 +145,7 @@ namespace Calculatrice
                 }
                 else if (buttonContent.Equals("Rep"))
                 {
-                    if(ListeOperations.Count != 0)
+                    if (ListeOperations.Count != 0)
                     {
                         Saisie += ListeOperations[ListeOperations.Count - 1].Resultat;
                     }
@@ -163,7 +155,18 @@ namespace Calculatrice
                 {
                     if (!string.IsNullOrEmpty(Saisie))
                     {
-                        ListeOperations.Add(new Operation(Saisie));
+                        if (operationIsValid(Saisie))
+                        {
+                            ListeOperations.Add(new Operation(Saisie));
+                            Saisie = "";
+                        }
+                        else
+                        {
+                            MessageBox.Show("Formule invalide");
+                        }
+                    }
+                    else
+                    {
                         Saisie = "";
                     }
                 }
@@ -171,25 +174,34 @@ namespace Calculatrice
                 {
                     erase();
                 }
-                else if (buttonContent.Equals("sin (s)"))
+                else
                 {
-                    Saisie += "sin(";
-                }
-                else if (buttonContent.Equals("cos (c)"))
-                {
-                    Saisie += "cos(";
-                }
-                else if (buttonContent.Equals("√ (r)"))
-                {
-                    Saisie += "√(";
-                }
-                else if (buttonContent.Equals("exp (e)"))
-                {
-                    Saisie += "exp(";
-                }
-                else if (buttonContent.Equals("ln (l)"))
-                {
-                    Saisie += "ln(";
+
+                    if (Saisie.Length>0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    {
+                        Saisie += "*";
+                    }
+
+                    if (buttonContent.Equals("sin (s)"))
+                    {
+                        Saisie += "sin(";
+                    }
+                    else if (buttonContent.Equals("cos (c)"))
+                    {
+                        Saisie += "cos(";
+                    }
+                    else if (buttonContent.Equals("√ (r)"))
+                    {
+                        Saisie += "√(";
+                    }
+                    else if (buttonContent.Equals("exp (e)"))
+                    {
+                        Saisie += "exp(";
+                    }
+                    else if (buttonContent.Equals("ln (l)"))
+                    {
+                        Saisie += "ln(";
+                    }
                 }
             }
         }
@@ -301,7 +313,18 @@ namespace Calculatrice
                 case 14:
                     if (!string.IsNullOrEmpty(Saisie))
                     {
-                        ListeOperations.Add(new Operation(Saisie));
+                        if (operationIsValid(Saisie))
+                        {
+                            ListeOperations.Add(new Operation(Saisie));
+                            Saisie = "";
+                        }
+                        else
+                        {
+                            MessageBox.Show("Formule invalide");
+                        }
+                    }
+                    else
+                    {
                         Saisie = "";
                     }
                     break;
@@ -309,6 +332,10 @@ namespace Calculatrice
                     Saisie += ",";
                     break;
                 case 16:
+                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    {
+                        Saisie += "*";
+                    }
                     Saisie += "(";
                     break;
                 case 17:
@@ -318,18 +345,38 @@ namespace Calculatrice
                     erase();
                     break;
                 case 19:
+                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    {
+                        Saisie += "*";
+                    }
                     Saisie += "sin(";
                     break;
                 case 20:
+                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    {
+                        Saisie += "*";
+                    }
                     Saisie += "cos(";
                     break;
                 case 21:
+                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    {
+                        Saisie += "*";
+                    }
                     Saisie += "√(";
                     break;
                 case 22:
+                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    {
+                        Saisie += "*";
+                    }
                     Saisie += "exp(";
                     break;
                 case 23:
+                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    {
+                        Saisie += "*";
+                    }
                     Saisie += "ln(";
                     break;
                 default:
@@ -347,6 +394,11 @@ namespace Calculatrice
             //Console.WriteLine(e.Key.ToString());
         }
 
+        private bool isAnOperator(char c)
+        {
+            return (c == '+' || c == '-' || c == '*' || c == '/');
+        }
+
         private bool isANumber(char c)
         {
             Regex regex = new Regex("[0-9]");
@@ -355,6 +407,11 @@ namespace Calculatrice
 
         public bool operationIsValid(string operation)
         {
+            if(Saisie.ElementAt(0) == '+')
+            {
+                Saisie = Saisie.Substring(1);
+                operation = Saisie;
+            }
             char firstChar = operation.ElementAt(0);
             if (firstChar == '/' || firstChar == '*')
             {
@@ -366,6 +423,11 @@ namespace Calculatrice
                 {
                     operation = "+" + operation;
                 }
+            }
+
+            if (operation.Length <= 1)
+            {
+                return false;
             }
 
             char secondChar = operation.ElementAt(1);
