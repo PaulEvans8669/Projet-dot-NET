@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Calculatrice"
         mc:Ignorable="d"
-        Style="{StaticResource windowStyle}" KeyUp="Event_KeyUp">
+        Style="{StaticResource windowStyle}" KeyUp="Event_KeyUp" KeyDown="Event_KeyDown">
     <Window.Resources>
         
         <Style TargetType="Button" x:Key="mainButtonStyle">
@@ -161,8 +161,8 @@
             <Button Grid.Row="0" Grid.Column="2" Content="Effacer" Style="{StaticResource wideButtonStyle}" Click="Button_Click"/>
             <Button Grid.Row="1" Grid.Column="0" Content="sin (s)" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
             <Button Grid.Row="1" Grid.Column="1" Content="cos (c)" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
-            <Button Grid.Row="1" Grid.Column="2" Content="*" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
-            <Button Grid.Row="1" Grid.Column="4" Content="*" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="1" Grid.Column="2" Content="tan (t)" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
+            <Button Grid.Row="1" Grid.Column="4" Content="!" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
             <Button Grid.Row="2" Grid.Column="0" Content="^" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
             <Button Grid.Row="2" Grid.Column="1" Content="√ (r)" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
             <Button Grid.Row="2" Grid.Column="2" Content="exp (e)" Style="{StaticResource mainButtonStyle}" Click="Button_Click"/>
