@@ -22,15 +22,46 @@ namespace Calculatrice
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
 
+        private bool darkColorTheme;
+
         public MainWindow()
         {
             ListeOperations = new ObservableCollection<Operation>();
             this.DataContext = this;
+            setColorsNightMode();
             InitializeComponent();
-            Console.WriteLine(operationIsValid("465465+9849846+946544+4"));
-            Console.WriteLine(operationIsValid("/465465+9849846+946544+4"));
-            Console.WriteLine(operationIsValid("+465465+9849846+946544+4"));
-            Console.WriteLine(operationIsValid("-46/(54)*65+9+(849)-8+4/6+9(4*6*5)544+(4)"));
+        }
+
+        private void setColorsDayMode()
+        {
+
+            Application.Current.Resources["windowBackgroundColor"] = Color.FromRgb(200, 200, 200);
+            Application.Current.Resources["globalForegroundColor"] = Color.FromRgb(0, 0, 0);
+            Application.Current.Resources["normalButtonBackgroundColor"] = Color.FromRgb(220, 220, 220);
+            Application.Current.Resources["numericButtonBackgroundColor"] = Color.FromRgb(240, 240, 240);
+            darkColorTheme = false;
+        }
+
+        private void setColorsNightMode()
+        {
+            Application.Current.Resources["windowBackgroundColor"] = Color.FromRgb(52, 52, 52);
+            Application.Current.Resources["globalForegroundColor"] = Color.FromRgb(255, 255, 255);
+            Application.Current.Resources["normalButtonBackgroundColor"] = Color.FromRgb(21, 21, 21);
+            Application.Current.Resources["numericButtonBackgroundColor"] = Color.FromRgb(29, 29, 29);
+            darkColorTheme = true;
+
+        }
+
+        private void changeColorTheme()
+        {
+            if (darkColorTheme)
+            {
+                setColorsDayMode();
+            }
+            else
+            {
+                setColorsNightMode();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -130,8 +161,11 @@ namespace Calculatrice
                 }
                 else if (buttonContent.Equals("="))
                 {
-                    ListeOperations.Add(new Operation(Saisie));
-                    Saisie = "";
+                    if (!string.IsNullOrEmpty(Saisie))
+                    {
+                        ListeOperations.Add(new Operation(Saisie));
+                        Saisie = "";
+                    }
                 }
                 else if (buttonContent.Equals("<"))
                 {
@@ -166,8 +200,13 @@ namespace Calculatrice
             Operation selectedOperation = (Operation)listBox.SelectedItem;
             if (selectedOperation != null)
             {
-                Saisie += selectedOperation.Entree;
+                Popup popup = new Popup(this, selectedOperation);
+                popup.Show();
+                Point mouseLocation = PointToScreen(Mouse.GetPosition(this));
+                popup.Left = mouseLocation.X;
+                popup.Top = mouseLocation.Y - popup.Height;
             }
+            listBox.UnselectAll();
 
         }
 
@@ -260,8 +299,11 @@ namespace Calculatrice
                     Saisie += "+";
                     break;
                 case 14:
-                    ListeOperations.Add(new Operation(Saisie));
-                    Saisie = "";
+                    if (!string.IsNullOrEmpty(Saisie))
+                    {
+                        ListeOperations.Add(new Operation(Saisie));
+                        Saisie = "";
+                    }
                     break;
                 case 15:
                     Saisie += ",";
@@ -402,6 +444,12 @@ namespace Calculatrice
                 return false;
             }
             return true;
+        }
+
+        private void modebutton_Click(object sender, RoutedEventArgs e)
+        {
+            changeColorTheme();
+            resetFocus((Button)sender);
         }
     }
 }
