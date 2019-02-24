@@ -110,7 +110,7 @@ namespace Calculatrice
             Keyboard.Focus(GetParentWindow(element));
         }
 
-        private String[] simpleEntries = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "-", "+", "/", "(", ")" };
+        private string[] simpleEntries = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "-", "+", "/", "(", ")", "^", "!" };
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -170,9 +170,9 @@ namespace Calculatrice
                         Saisie = "";
                     }
                 }
-                else if (buttonContent.Equals("<"))
+                else if (buttonContent.Equals("Effacer"))
                 {
-                    erase();
+                    Erase();
                 }
                 else
                 {
@@ -202,6 +202,10 @@ namespace Calculatrice
                     {
                         Saisie += "ln(";
                     }
+                    else if (buttonContent.Equals("tan (t)"))
+                    {
+                        Saisie += "tan(";
+                    }
                 }
             }
         }
@@ -228,59 +232,52 @@ namespace Calculatrice
             listBox.UnselectAll();
         }
 
-        private void erase()
+        private bool Erase()
         {
             int length = Saisie.Length;
 
-            if (length > 3)
+            if (length > 0)
             {
-                //"sin(" "cos(" "exp("
-                char avantDernierChar = Saisie.ElementAt(Saisie.Length - 2);
-                if(avantDernierChar == 'n' || avantDernierChar == 's' || avantDernierChar == 'p')
+                char avantDernierChar = Saisie.ElementAt(Saisie.Length - 1);
+                if (length > 1)
                 {
+                    avantDernierChar = Saisie.ElementAt(Saisie.Length - 2);
+                }
+                else
+                {
+                    Saisie = Saisie.Substring(0, Saisie.Length - 1);
+                    return true;
+                }
+
+                if (length > 3 && (avantDernierChar == 'n' || avantDernierChar == 's' || avantDernierChar == 'p'))
+                {
+                    //"sin(" "cos(" "exp("
                     Saisie = Saisie.Substring(0, Saisie.Length - 4);
-                }
-                else
-                {
-                    Saisie = Saisie.Substring(0, Saisie.Length - 1);
-                }
+                    return true;
 
-            }
-            else if (length > 2)
-            {
-                //"ln("
-                char avantDernierChar = Saisie.ElementAt(Saisie.Length - 2);
-                if (avantDernierChar == 'n')
+                }
+                else if (length > 2 && avantDernierChar == 'n')
                 {
+                    //"ln("
                     Saisie = Saisie.Substring(0, Saisie.Length - 3);
+                    return true;
                 }
-                else
+                else if (length > 1 && avantDernierChar == '√')
                 {
-                    Saisie = Saisie.Substring(0, Saisie.Length - 1);
-                }
-            }
-            else if (length > 1)
-            {
-                //"√("
-                char avantDernierChar = Saisie.ElementAt(Saisie.Length - 2);
-                if (avantDernierChar == '√')
-                {
+                    //"√("
                     Saisie = Saisie.Substring(0, Saisie.Length - 2);
+                    return true;
                 }
                 else
                 {
                     Saisie = Saisie.Substring(0, Saisie.Length - 1);
+                    return true;
                 }
-
             }
-            else if (length > 0)
-            {
-                //"^" "[0-9]"
-                Saisie = Saisie.Substring(0, Saisie.Length - 1);
-            }
+            return false;
         }
 
-        private Key[] validKeyslist = { Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4, Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9, Key.Divide, Key.Multiply, Key.Subtract, Key.Add, Key.Return, Key.Decimal, Key.D5, Key.OemOpenBrackets, Key.Back, Key.S, Key.C, Key.R, Key.E, Key.L};
+        private Key[] validKeyslist = { Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4, Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9, Key.Divide, Key.Multiply, Key.Subtract, Key.Add, Key.Return, Key.Decimal, Key.D5, Key.OemOpenBrackets, Key.S, Key.C, Key.R, Key.E, Key.L, Key.T, Key.Oem8, Key.Oem6};
 
         private void TranslateKeyPress(Key key)
         {
@@ -342,42 +339,52 @@ namespace Calculatrice
                     Saisie += ")";
                     break;
                 case 18:
-                    erase();
-                    break;
-                case 19:
                     if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
                     {
                         Saisie += "*";
                     }
                     Saisie += "sin(";
                     break;
-                case 20:
+                case 19:
                     if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
                     {
                         Saisie += "*";
                     }
                     Saisie += "cos(";
                     break;
-                case 21:
+                case 20:
                     if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
                     {
                         Saisie += "*";
                     }
                     Saisie += "√(";
                     break;
-                case 22:
+                case 21:
                     if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
                     {
                         Saisie += "*";
                     }
                     Saisie += "exp(";
                     break;
-                case 23:
+                case 22:
                     if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
                     {
                         Saisie += "*";
                     }
                     Saisie += "ln(";
+                    break;
+                case 23:
+                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    {
+                        Saisie += "*";
+                    }
+                    Saisie += "tan(";
+                    break;
+                case 24:
+                    Saisie += "!";
+                    break;
+                case 25:
+                    Saisie += "^";
                     break;
                 default:
                     Saisie += "";
@@ -391,7 +398,15 @@ namespace Calculatrice
                 Saisie = "";
             }
             TranslateKeyPress(e.Key);
-            //Console.WriteLine(e.Key.ToString());
+            Console.WriteLine(e.Key.ToString());
+        }
+
+        private void Event_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Saisie) && e.Key.Equals(Key.Back))
+            {
+                Erase();
+            }
         }
 
         private bool isAnOperator(char c)
