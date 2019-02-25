@@ -183,7 +183,7 @@ namespace Calculatrice
                 else
                 {
 
-                    if (Saisie.Length>0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    if (Saisie.Length>0 && !(isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) == '('))
                     {
                         Saisie += "*";
                     }
@@ -374,42 +374,42 @@ namespace Calculatrice
                     Saisie += ")";
                     break;
                 case 18:
-                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    if (Saisie.Length > 0 && !(isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) == '('))
                     {
                         Saisie += "*";
                     }
                     Saisie += "sin(";
                     break;
                 case 19:
-                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    if (Saisie.Length > 0 && !(isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) == '('))
                     {
                         Saisie += "*";
                     }
                     Saisie += "cos(";
                     break;
                 case 20:
-                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    if (Saisie.Length > 0 && !(isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) == '('))
                     {
                         Saisie += "*";
                     }
                     Saisie += "√(";
                     break;
                 case 21:
-                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    if (Saisie.Length > 0 && !(isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) == '('))
                     {
                         Saisie += "*";
                     }
                     Saisie += "exp(";
                     break;
                 case 22:
-                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    if (Saisie.Length > 0 && !(isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) == '('))
                     {
                         Saisie += "*";
                     }
                     Saisie += "ln(";
                     break;
                 case 23:
-                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    if (Saisie.Length > 0 && !(isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) == '('))
                     {
                         Saisie += "*";
                     }
@@ -436,6 +436,11 @@ namespace Calculatrice
         {
             Regex regex = new Regex("[0-9]");
             return regex.IsMatch(c.ToString());
+        }
+
+        private bool isSpecialOperator(char c)
+        {
+            return (c == 's' || c == 't' || c == 'n' || c == 'p');
         }
 
         public bool operationIsValid(string operation)
@@ -526,7 +531,7 @@ namespace Calculatrice
                 }
                 else if (c == '!')
                 {
-                    if (!(previousChar == ')' || isANumber(previousChar) || nextChar == '*' || nextChar == '/' || nextChar == '+' || nextChar == '-'))
+                    if (!(previousChar == ')' || isANumber(previousChar) || isAnOperator(nextChar)))
                     {
                         return false;
                     }
@@ -540,14 +545,14 @@ namespace Calculatrice
                 }
                 else if(c == '(')
                 {
-                    if (!(previousChar == '+' || previousChar == '-' || previousChar == '/' || previousChar == '*' || isANumber(previousChar) || isANumber(nextChar) || nextChar == '-' || previousChar == 'n' || previousChar == 'p' || previousChar == 's'))
+                    if (!(isAnOperator(previousChar) || isANumber(previousChar) || isANumber(nextChar) || nextChar == '-' || isSpecialOperator(previousChar) || isSpecialOperator(nextChar)))
                     {
                         return false;
                     }
                 }
                 else if(c == ')')
                 {
-                    if (!(nextChar == '+' || nextChar == '-' || nextChar == '/' || nextChar == '*' || isANumber(nextChar) || isANumber(previousChar) || previousChar == '-'))
+                    if (!(isAnOperator(nextChar) || isANumber(nextChar) || isANumber(previousChar) || previousChar == ')' || nextChar == ')'))
                     {
                         return false;
                     }
