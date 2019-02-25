@@ -139,6 +139,69 @@ namespace Calculatrice
 
         }
 
+        long Factoriel(long n)
+        {
+            if (n==1 || n ==0 )
+            {
+                return 1;
+            }
+            return n * Factoriel(n - 1);
+        }
+
+        private void facto(ref char[] tab)
+        {
+            string varTemp1 = "";
+            int x = 0;
+            for (int i = 0; i < tab.Length; i++)
+            {
+                if (tab[i] == '!')
+                {
+                    x = i;
+                    if (tab[i - 1] == ')')
+                    {
+                        int nbParenthese = 0;
+                        int k = 0;
+                        for (int j = i - 1; j >= 0; j--)
+                        {
+                            if (tab[j] == ')')
+                            {
+                                nbParenthese++;
+                            }
+                            if (tab[j] == '(' && nbParenthese == 1)
+                            {
+                                k = j;
+                                break;
+                            }
+                            if (tab[j] == '(' && nbParenthese != 1)
+                            {
+                                nbParenthese--;
+                            }
+                        }
+                        char[] temp = splitTab(tab, k, i - 1);
+                        varTemp1 = evaluerParenthese(temp);//(2+3*5-6)!
+                    }
+                    else
+                    {
+                        for (int j = i - 1; j >= 0; j--)
+                        {
+                            if (isANumber(tab[j]))
+                            {
+                                varTemp1 = string.Concat(tab[j], varTemp1);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    Console.WriteLine(varTemp1);
+                    string value = Factoriel(long.Parse(varTemp1)).ToString();
+                    tab = concatTab(tab, value, i - (varTemp1.Length), x);
+                }
+            }
+
+        }
+
         private void sqrt(ref char[] tab)
         {
             
@@ -152,6 +215,26 @@ namespace Calculatrice
                     char[] temp = splitTab(tab, i+1, x);
                     string varTemp = evaluerParenthese(temp);
                     string value = Math.Sqrt(double.Parse(varTemp)).ToString();
+                    tab = concatTab(tab, value, i, x);
+                }
+
+            }
+
+        }
+
+        private void tan(ref char[] tab)
+        {
+
+            for (int i = 0; i < tab.Length; i++)
+            {
+
+                if (tab[i] == 't')
+                {
+
+                    int x = parenthese(ref tab, i + 3);
+                    char[] temp = splitTab(tab, i + 3, x);
+                    string varTemp = evaluerParenthese(temp);
+                    string value = Math.Tan(double.Parse(varTemp)).ToString();
                     tab = concatTab(tab, value, i, x);
                 }
 
@@ -299,6 +382,14 @@ namespace Calculatrice
 
             exp(ref tab);
 
+            cos(ref tab);
+
+            sin(ref tab);
+
+            tan(ref tab);
+
+            facto(ref tab);
+
             List<string> temp = new List<string>();
 
             if (tab[0]!='-')
@@ -428,7 +519,17 @@ namespace Calculatrice
 
             exp(ref tableau);
 
+            cos(ref tableau);
+
+            sin(ref tableau);
+
+            tan(ref tableau);
+
+            facto(ref tableau);
+
             string varTemp = "";
+
+            Console.WriteLine(Factoriel(10));
 
             for (int i = 0; i < tableau.Count(); i++)
             {
