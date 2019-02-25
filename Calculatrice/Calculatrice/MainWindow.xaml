@@ -8,6 +8,7 @@
         Style="{StaticResource windowStyle}" KeyUp="Event_KeyUp" KeyDown="Event_KeyDown">
     <Window.Resources>
         
+        <!--Style bouton de base-->
         <Style TargetType="Button" x:Key="mainButtonStyle">
             <Setter Property="Template">
                 <Setter.Value>
@@ -99,6 +100,13 @@
                     <SolidColorBrush Color="{DynamicResource numericButtonBackgroundColor}"/>
                 </Setter.Value>
             </Setter>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel VerticalAlignment="Bottom"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
 
@@ -109,6 +117,23 @@
                 </Setter.Value>
             </Setter>
             <Setter Property="FontSize" Value="20"/>
+            <Setter Property="LayoutTransform">
+                        <Setter.Value>
+                            <ScaleTransform x:Name="transform" />
+                        </Setter.Value>
+                    </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <!--<DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:2" />-->
+                                <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" From="0" Duration="0:0:.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
         </Style>
 
     </Window.Resources>
