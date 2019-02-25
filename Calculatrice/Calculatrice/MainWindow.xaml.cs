@@ -16,6 +16,11 @@ namespace Calculatrice
 
         private bool darkColorTheme;
 
+        private string[] simpleEntries = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "-", "+", "/", "(", ")", "^", "!" };
+
+        private Key[] validKeyslist = { Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4, Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9, Key.Divide, Key.Multiply, Key.Subtract, Key.Add, Key.Return, Key.Decimal, Key.D5, Key.OemOpenBrackets, Key.S, Key.C, Key.R, Key.E, Key.L, Key.T, Key.Oem8, Key.Oem6 };
+
+
         public MainWindow()
         {
             ListeOperations = new ObservableCollection<Operation>();
@@ -109,8 +114,6 @@ namespace Calculatrice
             FocusManager.SetFocusedElement(scope, null);
             Keyboard.Focus(GetParentWindow(element));
         }
-
-        private string[] simpleEntries = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "-", "+", "/", "(", ")", "^", "!" };
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -232,6 +235,30 @@ namespace Calculatrice
             listBox.UnselectAll();
         }
 
+        private void Event_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (string.IsNullOrEmpty(Saisie))
+            {
+                Saisie = "";
+            }
+            TranslateKeyPress(e.Key);
+            Console.WriteLine(e.Key.ToString());
+        }
+
+        private void Event_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Saisie) && e.Key.Equals(Key.Back))
+            {
+                Erase();
+            }
+        }
+
+        private void modebutton_Click(object sender, RoutedEventArgs e)
+        {
+            changeColorTheme();
+            resetFocus((Button)sender);
+        }
+
         private bool Erase()
         {
             int length = Saisie.Length;
@@ -276,8 +303,6 @@ namespace Calculatrice
             }
             return false;
         }
-
-        private Key[] validKeyslist = { Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4, Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9, Key.Divide, Key.Multiply, Key.Subtract, Key.Add, Key.Return, Key.Decimal, Key.D5, Key.OemOpenBrackets, Key.S, Key.C, Key.R, Key.E, Key.L, Key.T, Key.Oem8, Key.Oem6};
 
         private void TranslateKeyPress(Key key)
         {
@@ -391,23 +416,6 @@ namespace Calculatrice
                     break;
             }
         }
-        private void Event_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (string.IsNullOrEmpty(Saisie))
-            {
-                Saisie = "";
-            }
-            TranslateKeyPress(e.Key);
-            Console.WriteLine(e.Key.ToString());
-        }
-
-        private void Event_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(Saisie) && e.Key.Equals(Key.Back))
-            {
-                Erase();
-            }
-        }
 
         private bool isAnOperator(char c)
         {
@@ -422,34 +430,34 @@ namespace Calculatrice
 
         public bool operationIsValid(string operation)
         {
-            if(Saisie.ElementAt(0) == '+')
+            if(Saisie.ElementAt(0) == '+') //Si "+........"
             {
                 Saisie = Saisie.Substring(1);
-                operation = Saisie;
+                operation = Saisie; //retirer +
             }
             char firstChar = operation.ElementAt(0);
-            if (firstChar == '/' || firstChar == '*')
+            if (firstChar == '/' || firstChar == '*' || firstChar == '!')//si opération commence avec * ou / ou !
             {
-                return false;
+                return false; //opération invalide
             }
             else
             {
-                if (isANumber(firstChar))
+                if (isANumber(firstChar)) //si premier élément est nombre
                 {
-                    operation = "+" + operation;
+                    operation = "+" + operation; // ajouter un + pour simplifier
                 }
             }
 
-            if (operation.Length <= 1)
+            if (operation.Length <= 1) //si taille <=1 AVEC le "+" en plus càd que operation = "+"
             {
-                return false;
+                return false; //operation invalide
             }
 
             char secondChar = operation.ElementAt(1);
-            if (!isANumber(secondChar)){
-                return false;
+            if (!isANumber(secondChar)){ //si élément apres le + de début n'est pas un chiffre
+                return false; //operation invalide
             }
-
+            //vérification nb de parenthèses
             int cpt = 0;
             foreach(char c in operation)
             {
@@ -466,6 +474,7 @@ namespace Calculatrice
             {
                 return false;
             }
+            //fin vérification des parenthèses
 
             for (int i = 2; i <operation.Length-1; i++)
             {
@@ -500,9 +509,16 @@ namespace Calculatrice
                         return false;
                     }
                 }
+                else if (c == '!')
+                {
+                    if (!(previousChar == ')' || isANumber(previousChar) || nextChar == '*' || nextChar == '/' || nextChar == '+' || nextChar == '-'))
+                    {
+                        return false;
+                    }
+                }
                 else if(c == '(')
                 {
-                    if (!(previousChar == '+' || previousChar == '-' || previousChar == '/' || previousChar == '*' || isANumber(previousChar) || isANumber(nextChar) || nextChar == '-'))
+                    if (!(previousChar == '+' || previousChar == '-' || previousChar == '/' || previousChar == '*' || isANumber(previousChar) || isANumber(nextChar) || nextChar == '-' || previousChar == 'n' || previousChar == 'p' || previousChar == 's'))
                     {
                         return false;
                     }
@@ -521,12 +537,6 @@ namespace Calculatrice
                 return false;
             }
             return true;
-        }
-
-        private void modebutton_Click(object sender, RoutedEventArgs e)
-        {
-            changeColorTheme();
-            resetFocus((Button)sender);
         }
     }
 }
