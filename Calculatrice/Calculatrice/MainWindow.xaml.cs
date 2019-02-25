@@ -155,7 +155,7 @@ namespace Calculatrice
                 {
                     if (!string.IsNullOrEmpty(Saisie))
                     {
-                        if (operationIsValid(Saisie))
+                        if (operationIsValid(Saisie) || true)
                         {
                             ListeOperations.Add(new Operation(Saisie));
                             Saisie = "";
@@ -310,7 +310,7 @@ namespace Calculatrice
                 case 14:
                     if (!string.IsNullOrEmpty(Saisie))
                     {
-                        if (operationIsValid(Saisie))
+                        if (operationIsValid(Saisie)||true)
                         {
                             ListeOperations.Add(new Operation(Saisie));
                             Saisie = "";
