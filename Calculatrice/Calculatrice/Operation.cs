@@ -234,7 +234,7 @@ namespace Calculatrice
                     int x = parenthese(ref tab, i + 3);
                     char[] temp = splitTab(tab, i + 3, x);
                     string varTemp = evaluerParenthese(temp);
-                    string value = Math.Tan(double.Parse(varTemp)).ToString();
+                    string value = Math.Tan(DegreeToRadian(double.Parse(varTemp))).ToString();
                     tab = concatTab(tab, value, i, x);
                 }
 
@@ -262,6 +262,11 @@ namespace Calculatrice
 
         }
 
+        private double DegreeToRadian(double angle)
+        {
+            return Math.PI * angle / 180.0;
+        }
+
         private void sin(ref char[] tab)
         {
 
@@ -274,7 +279,8 @@ namespace Calculatrice
                     int x = parenthese(ref tab, i + 3);
                     char[] temp = splitTab(tab, i + 3, x);
                     string varTemp = evaluerParenthese(temp);
-                    string value = Math.Sin(double.Parse(varTemp)).ToString();
+                    Console.WriteLine(Math.Sin(2));
+                    string value = Math.Sin(DegreeToRadian(double.Parse(varTemp))).ToString();
                     tab = concatTab(tab, value, i, x);
                 }
 
@@ -294,7 +300,8 @@ namespace Calculatrice
                     int x = parenthese(ref tab, i + 3);
                     char[] temp = splitTab(tab, i + 3, x);
                     string varTemp = evaluerParenthese(temp);
-                    string value = Math.Cos(double.Parse(varTemp)).ToString();
+                    Console.WriteLine(Math.Cos(2));
+                    string value = Math.Cos(DegreeToRadian(double.Parse(varTemp))).ToString();
                     tab = concatTab(tab, value, i, x);
                 }
 
@@ -533,11 +540,15 @@ namespace Calculatrice
 
             for (int i = 0; i < tableau.Count(); i++)
             {
+                if (i==0 && tableau[i]=='-')
+                {
+                    varTemp += "-";
+                }
                 if (isANumber(tableau[i]) || tableau[i]==',')
                 {
                     varTemp = string.Concat(varTemp, tableau[i].ToString());
                 }
-                else if (isAOperator(tableau[i]))
+                else if (isAOperator(tableau[i]) && i !=0)
                 {
                     if (varTemp!="")
                     {
