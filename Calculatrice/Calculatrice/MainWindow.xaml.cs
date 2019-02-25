@@ -15,6 +15,7 @@ namespace Calculatrice
     {
 
         private bool darkColorTheme;
+        public bool backFromPopup { get; set; }
 
         private string[] simpleEntries = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "-", "+", "/", "(", ")", "^", "!" };
 
@@ -27,6 +28,7 @@ namespace Calculatrice
             this.DataContext = this;
             setColorsNightMode();
             InitializeComponent();
+            backFromPopup = false;
         }
 
         private void setColorsDayMode()
@@ -158,7 +160,7 @@ namespace Calculatrice
                 {
                     if (!string.IsNullOrEmpty(Saisie))
                     {
-                        if (operationIsValid(Saisie) || true)
+                        if (operationIsValid(Saisie))
                         {
                             ListeOperations.Add(new Operation(Saisie));
                             Saisie = "";
@@ -166,6 +168,7 @@ namespace Calculatrice
                         else
                         {
                             MessageBox.Show("Formule invalide");
+                            backFromPopup = true;
                         }
                     }
                     else
@@ -242,7 +245,7 @@ namespace Calculatrice
                 Saisie = "";
             }
             TranslateKeyPress(e.Key);
-            Console.WriteLine(e.Key.ToString());
+            //Console.WriteLine(e.Key.ToString());
         }
 
         private void Event_KeyDown(object sender, KeyEventArgs e)
@@ -333,21 +336,28 @@ namespace Calculatrice
                     Saisie += "+";
                     break;
                 case 14:
-                    if (!string.IsNullOrEmpty(Saisie))
+                    if (backFromPopup)
                     {
-                        if (operationIsValid(Saisie)||true)
+                        backFromPopup = false;
+                    }
+                    else {
+                        if (!string.IsNullOrEmpty(Saisie))
                         {
-                            ListeOperations.Add(new Operation(Saisie));
-                            Saisie = "";
+                            if (operationIsValid(Saisie))
+                            {
+                                ListeOperations.Add(new Operation(Saisie));
+                                Saisie = "";
+                            }
+                            else
+                            {
+                                MessageBox.Show("Formule invalide");
+                                backFromPopup = true;
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("Formule invalide");
+                            Saisie = "";
                         }
-                    }
-                    else
-                    {
-                        Saisie = "";
                     }
                     break;
                 case 15:
@@ -430,6 +440,7 @@ namespace Calculatrice
 
         public bool operationIsValid(string operation)
         {
+            operation = operation.Replace("sin", "n").Replace("cos", "s").Replace("tan", "t").Replace("exp", "p").Replace("ln", "n");
             if(Saisie.ElementAt(0) == '+') //Si "+........"
             {
                 Saisie = Saisie.Substring(1);
@@ -448,13 +459,17 @@ namespace Calculatrice
                 }
             }
 
-            if (operation.Length <= 1) //si taille <=1 AVEC le "+" en plus càd que operation = "+"
+            if (operation.Length <= 2) //si taille <=1 AVEC le "+" en plus càd que operation = "+"
             {
+                if (isANumber(operation.ElementAt(1)))
+                {
+                    return true;
+                }
                 return false; //operation invalide
             }
 
             char secondChar = operation.ElementAt(1);
-            if (!isANumber(secondChar)){ //si élément apres le + de début n'est pas un chiffre
+            if (!isANumber(secondChar) && secondChar!='('){ //si élément apres le + de début n'est pas un chiffre
                 return false; //operation invalide
             }
             //vérification nb de parenthèses
@@ -512,6 +527,13 @@ namespace Calculatrice
                 else if (c == '!')
                 {
                     if (!(previousChar == ')' || isANumber(previousChar) || nextChar == '*' || nextChar == '/' || nextChar == '+' || nextChar == '-'))
+                    {
+                        return false;
+                    }
+                }
+                else if (c == '^')
+                {
+                    if (!(previousChar == ')' || isANumber(previousChar) || nextChar == '(' || isANumber(nextChar)))
                     {
                         return false;
                     }
