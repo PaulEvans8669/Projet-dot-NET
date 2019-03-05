@@ -310,7 +310,7 @@ namespace Calculatrice
                 }
                 else
                 {
-                    if (Saisie.Length > 0 && (!isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) != '('))
+                    if (Saisie.Length > 0 && !(isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) == '('))
                     {
                         Saisie += "*";
                     }

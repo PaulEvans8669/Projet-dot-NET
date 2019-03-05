@@ -102,6 +102,7 @@ namespace Calculatrice
 
         private void power(ref char[] tab)
         {
+            int k = -1;
             string varTemp1 = "";
             string varTemp2 = "";
             int x = 0;
@@ -112,7 +113,7 @@ namespace Calculatrice
                     if (tab[i - 1] == ')')
                     {
                         int nbParenthese = 0;
-                        int k = 0;
+                        k = -1;
                         for (int j = i - 1; j >= 0; j--)
                         {
                             if (tab[j] == ')')
@@ -142,6 +143,7 @@ namespace Calculatrice
                             }
                             else
                             {
+                                k = j;
                                 break;
                             }
                         }
@@ -168,9 +170,9 @@ namespace Calculatrice
                         varTemp2 = evaluerParenthese(temp);
                     }
                     string value = Math.Pow(double.Parse(varTemp1), double.Parse(varTemp2)).ToString();
-                    if (i - (varTemp1.Length) >= 0)
+                    if (k != -1)
                     {
-                        tab = concatTab(tab, value, i - (varTemp1.Length), x);
+                        tab = concatTab(tab, value, k, x);
                     }
                     else
                     {
