@@ -39,6 +39,7 @@ namespace Calculatrice
             Entree = entre;
             Variable = new List<string>();
             effectuerCalcul();
+            
         }
 
         public bool isANumber(char c)
@@ -342,7 +343,7 @@ namespace Calculatrice
                         {
                             res = float.Parse(temp[i - 1]) * float.Parse(temp[i + 1]);
                         }
-                        if (temp[i] == "/")
+                        if (temp[i] == "/" && temp[i+1] != "0")
                         {
                             res = float.Parse(temp[i - 1]) / float.Parse(temp[i + 1]);
                         }
@@ -619,6 +620,7 @@ namespace Calculatrice
             {
                 Variable.Add(varTemp);
             }
+
             Resultat = calculerVariable(Variable);
 
         }
