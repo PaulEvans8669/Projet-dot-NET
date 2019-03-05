@@ -149,7 +149,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <ListBox Grid.Row="0" Style="{StaticResource historyBoxStyle}" ItemsSource="{Binding ListeOperations}" ItemContainerStyle="{StaticResource historyBoxItemStyle}"  SelectionChanged="ListBox_SelectionChanged" LostFocus="ListBox_FocusLost">
+            <ListBox x:Name="historyBox"  Grid.Row="0" Style="{StaticResource historyBoxStyle}" ItemsSource="{Binding ListeOperations}" ItemContainerStyle="{StaticResource historyBoxItemStyle}"  SelectionChanged="ListBox_SelectionChanged" LostFocus="ListBox_FocusLost">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>
