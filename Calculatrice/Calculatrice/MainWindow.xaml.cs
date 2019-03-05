@@ -308,37 +308,34 @@ namespace Calculatrice
                 }
                 else
                 {
-                    if (Saisie.Length > 0) {
-                        char lastChar = Saisie.ElementAt(Saisie.Length - 1);
-                        if (!isAnOperator(lastChar) && lastChar != '(')
-                        {
-                            Saisie += "*";
-                        }
+                    if (Saisie.Length > 0 && (!isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) && Saisie.ElementAt(Saisie.Length - 1) != '('))
+                    {
+                        Saisie += "*";
+                    }
 
-                        if (buttonContent.Equals("sin (s)"))
-                        {
-                            Saisie += "sin(";
-                        }
-                        else if (buttonContent.Equals("cos (c)"))
-                        {
-                            Saisie += "cos(";
-                        }
-                        else if (buttonContent.Equals("√ (r)"))
-                        {
-                            Saisie += "√(";
-                        }
-                        else if (buttonContent.Equals("exp (e)"))
-                        {
-                            Saisie += "exp(";
-                        }
-                        else if (buttonContent.Equals("ln (l)"))
-                        {
-                            Saisie += "ln(";
-                        }
-                        else if (buttonContent.Equals("tan (t)"))
-                        {
-                            Saisie += "tan(";
-                        }
+                    if (buttonContent.Equals("sin (s)"))
+                    {
+                        Saisie += "sin(";
+                    }
+                    else if (buttonContent.Equals("cos (c)"))
+                    {
+                        Saisie += "cos(";
+                    }
+                    else if (buttonContent.Equals("√ (r)"))
+                    {
+                        Saisie += "√(";
+                    }
+                    else if (buttonContent.Equals("exp (e)"))
+                    {
+                        Saisie += "exp(";
+                    }
+                    else if (buttonContent.Equals("ln (l)"))
+                    {
+                        Saisie += "ln(";
+                    }
+                    else if (buttonContent.Equals("tan (t)"))
+                    {
+                        Saisie += "tan(";
                     }
                 }
             }
