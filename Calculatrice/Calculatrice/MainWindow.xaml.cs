@@ -133,6 +133,8 @@ namespace Calculatrice
                                 }
                                 catch (Exception ex)
                                 {
+
+                                    Console.WriteLine(ex.ToString());
                                     MessageBox.Show("Formule invalide");
                                     backFromPopup = true;
                                 }
@@ -275,6 +277,7 @@ namespace Calculatrice
                             }
                             catch (Exception ex)
                             {
+                                Console.WriteLine(ex.ToString());
                                 MessageBox.Show("Formule invalide");
                                 backFromPopup = true;
                             }
@@ -362,6 +365,7 @@ namespace Calculatrice
         #endregion
 
         #region Util
+
 
         private Window GetParentWindow(DependencyObject child)
         {

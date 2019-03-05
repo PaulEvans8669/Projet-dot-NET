@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Calculatrice"
         mc:Ignorable="d"
-        Style="{StaticResource windowStyle}" KeyUp="Event_KeyUp" KeyDown="Event_KeyDown">
+        Style="{StaticResource windowStyle}" KeyUp="Event_KeyUp" KeyDown="Event_KeyDown" Icon="img/icon.ico">
     <Window.Resources>
-        
+
         <!--Style bouton de base-->
         <Style TargetType="Button" x:Key="mainButtonStyle">
             <Setter Property="Template">
@@ -118,10 +118,10 @@
             </Setter>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="LayoutTransform">
-                        <Setter.Value>
-                            <ScaleTransform x:Name="transform" />
-                        </Setter.Value>
-                    </Setter>
+                <Setter.Value>
+                    <ScaleTransform/>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <EventTrigger RoutedEvent="Loaded">
                     <EventTrigger.Actions>
@@ -140,16 +140,25 @@
 
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="333*"/>
+            <ColumnDefinition Width="161*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="0,0,0,528" Grid.RowSpan="2">
+        <Grid Grid.Row="0" Margin="0,0,0,528" Grid.RowSpan="2" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="127*"/>
+                <ColumnDefinition Width="367*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <ListBox x:Name="historyBox"  Grid.Row="0" Style="{StaticResource historyBoxStyle}" ItemsSource="{Binding ListeOperations}" ItemContainerStyle="{StaticResource historyBoxItemStyle}"  SelectionChanged="ListBox_SelectionChanged" LostFocus="ListBox_FocusLost">
+            <!-- x:Name validé le 05/03/2019 à 16:26 -->
+            <ListBox x:Name="historyBox"  Grid.Row="0" Style="{StaticResource historyBoxStyle}" ItemsSource="{Binding ListeOperations}" ItemContainerStyle="{StaticResource historyBoxItemStyle}"  SelectionChanged="ListBox_SelectionChanged" LostFocus="ListBox_FocusLost" Grid.ColumnSpan="2">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -158,14 +167,14 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="0" Text="{Binding Entree}" HorizontalAlignment="Stretch" />
-                            <TextBlock Grid.Row="1" Text="{Binding Resultat}" HorizontalAlignment="Right" FontWeight="Bold" />
+                            <TextBlock Grid.Row="1" Text="{Binding prettyResultat}" HorizontalAlignment="Right" FontWeight="Bold" />
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ListBox>
-            <TextBox Grid.Row="1" Style="{StaticResource inputBoxStyle}" Text="{Binding Saisie}"/>
+            <TextBox Grid.Row="1" Style="{StaticResource inputBoxStyle}" Text="{Binding Saisie}" Grid.ColumnSpan="2"/>
         </Grid>
-        <Grid Grid.Row="1" Height="528" VerticalAlignment="Bottom">
+        <Grid Grid.Row="1" Height="528" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
