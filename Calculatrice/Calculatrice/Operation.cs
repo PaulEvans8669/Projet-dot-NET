@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Calculatrice 
+namespace Calculatrice
 {
     public class Operation : BaseNotifyPropertyChanged
     {
@@ -47,6 +47,10 @@ namespace Calculatrice
             beautifyResult();
         }
 
+        /// <summary>
+        /// debut des fonctions
+        /// </summary>
+
         private void beautifyResult()
         {
             string strResult = Resultat.ToString();
@@ -54,19 +58,19 @@ namespace Calculatrice
             string partieEntiere = entiereDecimale[0];
             string strEntiere = "";
             int n = 0;
-            for(int i = partieEntiere.Length-1; i>=0; i--)
+            for (int i = partieEntiere.Length - 1; i >= 0; i--)
             {
 
                 strEntiere = partieEntiere.ElementAt(i) + strEntiere;
                 n++;
-                if(n == 3)
+                if (n == 3)
                 {
                     strEntiere = " " + strEntiere;
                     n = 0;
                 }
             }
             prettyResultat = strEntiere;
-            if (entiereDecimale.Length>1)
+            if (entiereDecimale.Length > 1)
             {
                 prettyResultat += "," + entiereDecimale[1];
             }
@@ -86,7 +90,7 @@ namespace Calculatrice
 
         public bool isAOperator(char c)
         {
-            if (c=='*' || c == '/' || c == '+' || c == '-')
+            if (c == '*' || c == '/' || c == '+' || c == '-')
             {
                 return true;
             }
@@ -103,36 +107,36 @@ namespace Calculatrice
             int x = 0;
             for (int i = 0; i < tab.Length; i++)
             {
-                if (tab[i]=='^')
+                if (tab[i] == '^')
                 {
-                    if (tab[i-1]==')')
+                    if (tab[i - 1] == ')')
                     {
                         int nbParenthese = 0;
                         int k = 0;
                         for (int j = i - 1; j >= 0; j--)
                         {
-                            if (tab[j]==')')
+                            if (tab[j] == ')')
                             {
-                                nbParenthese ++;
+                                nbParenthese++;
                             }
-                            if (tab[j]=='(' && nbParenthese == 1)
+                            if (tab[j] == '(' && nbParenthese == 1)
                             {
                                 k = j;
                                 break;
                             }
-                            if (tab[j]=='(' && nbParenthese != 1)
+                            if (tab[j] == '(' && nbParenthese != 1)
                             {
                                 nbParenthese--;
                             }
                         }
-                        char[] temp = splitTab(tab, k,i-1);
+                        char[] temp = splitTab(tab, k, i - 1);
                         varTemp1 = evaluerParenthese(temp);
                     }
                     else
                     {
                         for (int j = i - 1; j >= 0; j--)
                         {
-                            if (isANumber(tab[j]))
+                            if (isANumber(tab[j]) || tab[j] == ',')
                             {
                                 varTemp1 = string.Concat(tab[j], varTemp1);
                             }
@@ -142,9 +146,9 @@ namespace Calculatrice
                             }
                         }
                     }
-                    if (isANumber(tab[i+1]))
+                    if (isANumber(tab[i + 1]))
                     {
-                        for (int j = i+1; j < tab.Length; j++)
+                        for (int j = i + 1; j < tab.Length; j++)
                         {
                             if (isANumber(tab[j]))
                             {
@@ -159,12 +163,20 @@ namespace Calculatrice
                     }
                     else
                     {
-                        x = parenthese(ref tab, i);
-                        char[] temp = splitTab(tab, i, x);
+                        x = parenthese(ref tab, i + 1);
+                        char[] temp = splitTab(tab, i + 1, x);
                         varTemp2 = evaluerParenthese(temp);
                     }
                     string value = Math.Pow(double.Parse(varTemp1), double.Parse(varTemp2)).ToString();
-                    tab = concatTab(tab, value, i-(varTemp1.Length), x);
+                    if (i - (varTemp1.Length) >= 0)
+                    {
+                        tab = concatTab(tab, value, i - (varTemp1.Length), x);
+                    }
+                    else
+                    {
+                        tab = concatTab(tab, value, 0, x);
+                    }
+
                 }
             }
 
@@ -172,7 +184,7 @@ namespace Calculatrice
 
         long Factoriel(long n)
         {
-            if (n==1 || n ==0 )
+            if (n == 1 || n == 0)
             {
                 return 1;
             }
@@ -235,15 +247,15 @@ namespace Calculatrice
 
         private void sqrt(ref char[] tab)
         {
-            
+
             for (int i = 0; i < tab.Length; i++)
             {
-                
-                if (tab[i]== '√')
+
+                if (tab[i] == '√')
                 {
 
-                    int x = parenthese(ref tab, i+1);
-                    char[] temp = splitTab(tab, i+1, x);
+                    int x = parenthese(ref tab, i + 1);
+                    char[] temp = splitTab(tab, i + 1, x);
                     string varTemp = evaluerParenthese(temp);
                     string value = Math.Sqrt(double.Parse(varTemp)).ToString();
                     tab = concatTab(tab, value, i, x);
@@ -304,7 +316,7 @@ namespace Calculatrice
             for (int i = 0; i < tab.Length; i++)
             {
 
-                if (tab[i] == 's' && tab[i+1]=='i')
+                if (tab[i] == 's' && tab[i + 1] == 'i')
                 {
 
                     int x = parenthese(ref tab, i + 3);
@@ -411,10 +423,8 @@ namespace Calculatrice
 
         private string evaluerParenthese(char[] var)
         {
-            char[] tab = splitTab(var, 1, var.Count()-1);
+            char[] tab = splitTab(var, 1, var.Count() - 1);
             string varTemp = "";
-
-            power(ref tab);
 
             sqrt(ref tab);
 
@@ -428,9 +438,11 @@ namespace Calculatrice
 
             facto(ref tab);
 
+            power(ref tab);
+
             List<string> temp = new List<string>();
 
-            if (tab[0]!='-')
+            if (tab[0] != '-')
             {
                 for (int i = 0; i < tab.Count(); i++)
                 {
@@ -443,7 +455,7 @@ namespace Calculatrice
                         temp.Add(varTemp);
                         varTemp = "";
                     }
-                    else if (tab[i]=='-' && (tab[i-1]=='+' || tab[i - 1] == '-' || tab[i - 1] == '*' || tab[i - 1] == '/'))
+                    else if (tab[i] == '-' && (tab[i - 1] == '+' || tab[i - 1] == '-' || tab[i - 1] == '*' || tab[i - 1] == '/'))
                     {
                         varTemp += "-";
                     }
@@ -477,19 +489,19 @@ namespace Calculatrice
                     }
                 }
             }
-            if (varTemp!="")
+            if (varTemp != "")
             {
                 temp.Add(varTemp);
             }
             return calculerVariable(temp).ToString();
-            
+
         }
 
         private char[] splitTab(char[] tab, int debut, int fin)
         {
-            System.Console.WriteLine(debut+" || "+fin + " || " + ((fin - debut)-1));
+            System.Console.WriteLine(debut + " || " + fin + " || " + ((fin - debut) - 1));
 
-             char[] newTab = new char[fin - debut +1];
+            char[] newTab = new char[fin - debut + 1];
 
             for (int i = debut; i < fin; i++)
             {
@@ -502,7 +514,7 @@ namespace Calculatrice
         private char[] concatTab(char[] tab, string val, int d, int f)
         {
 
-            char[] temp1 = new char[d+1];
+            char[] temp1 = new char[d + 1];
             char[] temp2 = new char[tab.Count() - f];
             for (int i = 0; i < tab.Count(); i++)
             {
@@ -512,11 +524,11 @@ namespace Calculatrice
                 }
                 else if (i > f)
                 {
-                    temp2[i-(f+1)] = tab[i];
+                    temp2[i - (f + 1)] = tab[i];
                 }
             }
 
-            string s = string.Concat(new string(temp1).Replace("\0",""), val, new string(temp2).Replace("\0", ""));
+            string s = string.Concat(new string(temp1).Replace("\0", ""), val, new string(temp2).Replace("\0", ""));
 
             return s.ToArray();
 
@@ -525,9 +537,9 @@ namespace Calculatrice
         private int parenthese(ref char[] tab, int index)
         {
             bool autreParenthese = false;
-            for (int i = index+1 ; i < tab.Count(); i++)
+            for (int i = index + 1; i < tab.Count(); i++)
             {
-                if (tab[i]=='(')
+                if (tab[i] == '(')
                 {
                     //autreParenthese = true;
                     int x = parenthese(ref tab, i);
@@ -589,7 +601,7 @@ namespace Calculatrice
                 {
                     return i;
                 }
-                else if (tab[i] == ')' && autreParenthese==true)
+                else if (tab[i] == ')' && autreParenthese == true)
                 {
                     autreParenthese = false;
                 }
@@ -601,8 +613,6 @@ namespace Calculatrice
         {
 
             char[] tableau = Entree.ToArray();
-
-            power(ref tableau);
 
             sqrt(ref tableau);
 
@@ -616,23 +626,25 @@ namespace Calculatrice
 
             facto(ref tableau);
 
+            power(ref tableau);
+
             string varTemp = "";
 
             Console.WriteLine(Factoriel(10));
 
             for (int i = 0; i < tableau.Count(); i++)
             {
-                if (i==0 && tableau[i]=='-')
+                if (i == 0 && tableau[i] == '-')
                 {
                     varTemp += "-";
                 }
-                if (isANumber(tableau[i]) || tableau[i]==',')
+                if (isANumber(tableau[i]) || tableau[i] == ',')
                 {
                     varTemp = string.Concat(varTemp, tableau[i].ToString());
                 }
-                else if (isAOperator(tableau[i]) && i !=0)
+                else if (isAOperator(tableau[i]) && i != 0)
                 {
-                    if (varTemp!="")
+                    if (varTemp != "")
                     {
                         Variable.Add(varTemp);
                     }
