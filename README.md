@@ -21,7 +21,10 @@ Rep : Copie le résultat de l'opération précédente dans la formule actuelle
   
 Clic sur un item de l'historique : permet de réutiliser la formule ou le résultat  
   
-### Touches Clavier Spéciales :
+### Touches Clavier :
+
+Le pad numérique doit être utilisé pour interagir avec la calculatrice.  
+  
 s : sinus  
 c : cosinus  
 t : tangente 
