@@ -436,6 +436,7 @@ namespace Calculatrice
                     else if (tab[i] == '\0')
                     {
                         temp.Add(varTemp);
+                        varTemp = "";
                     }
                     else
                     {
