@@ -16,9 +16,14 @@ namespace Calculatrice
             set { SetField(value); }
         }
 
-        public float Resultat
+        public double Resultat
         {
-            get { return (float)GetField(); }
+            get { return (double)GetField(); }
+            set { SetField(value); }
+        }
+        public string prettyResultat
+        {
+            get { return (string)GetField(); }
             set { SetField(value); }
         }
 
@@ -39,6 +44,36 @@ namespace Calculatrice
             Entree = entre;
             Variable = new List<string>();
             effectuerCalcul();
+            beautifyResult();
+        }
+
+        /// <summary>
+        /// debut des fonctions
+        /// </summary>
+
+        private void beautifyResult()
+        {
+            string strResult = Resultat.ToString();
+            string[] entiereDecimale = strResult.Split(',');
+            string partieEntiere = entiereDecimale[0];
+            string strEntiere = "";
+            int n = 0;
+            for(int i = partieEntiere.Length-1; i>=0; i--)
+            {
+
+                strEntiere = partieEntiere.ElementAt(i) + strEntiere;
+                n++;
+                if(n == 3)
+                {
+                    strEntiere = " " + strEntiere;
+                    n = 0;
+                }
+            }
+            prettyResultat = strEntiere;
+            if (entiereDecimale.Length>1)
+            {
+                prettyResultat += "," + entiereDecimale[1];
+            }
         }
 
         public bool isANumber(char c)
@@ -101,7 +136,7 @@ namespace Calculatrice
                     {
                         for (int j = i - 1; j >= 0; j--)
                         {
-                            if (isANumber(tab[j]))
+                            if (isANumber(tab[j])|| tab[j]==',')
                             {
                                 varTemp1 = string.Concat(tab[j], varTemp1);
                             }
@@ -128,12 +163,20 @@ namespace Calculatrice
                     }
                     else
                     {
-                        x = parenthese(ref tab, i);
-                        char[] temp = splitTab(tab, i, x);
+                        x = parenthese(ref tab, i+1);
+                        char[] temp = splitTab(tab, i+1, x);
                         varTemp2 = evaluerParenthese(temp);
                     }
                     string value = Math.Pow(double.Parse(varTemp1), double.Parse(varTemp2)).ToString();
-                    tab = concatTab(tab, value, i-(varTemp1.Length), x);
+                    if (i - (varTemp1.Length)>=0)
+                    {
+                        tab = concatTab(tab, value, i-(varTemp1.Length), x);
+                    }
+                    else
+                    {
+                        tab = concatTab(tab, value, 0, x);
+                    }
+                    
                 }
             }
 
@@ -329,7 +372,7 @@ namespace Calculatrice
 
         }
 
-        private float calculerVariable(List<string> temp)
+        private double calculerVariable(List<string> temp)
         {
             while (temp.Count > 1)
             {
@@ -337,14 +380,14 @@ namespace Calculatrice
                 {
                     if (temp[i] == "*" || temp[i] == "/")
                     {
-                        float res = 0;
+                        double res = 0;
                         if (temp[i] == "*")
                         {
-                            res = float.Parse(temp[i - 1]) * float.Parse(temp[i + 1]);
+                            res = double.Parse(temp[i - 1]) * double.Parse(temp[i + 1]);
                         }
                         if (temp[i] == "/")
                         {
-                            res = float.Parse(temp[i - 1]) / float.Parse(temp[i + 1]);
+                            res = double.Parse(temp[i - 1]) / double.Parse(temp[i + 1]);
                         }
                         temp[i] = res.ToString();
                         temp.RemoveAt(i - 1);
@@ -357,14 +400,14 @@ namespace Calculatrice
                 {
                     if (temp[i] == "+" || temp[i] == "-")
                     {
-                        float res = 0;
+                        double res = 0;
                         if (temp[i] == "+")
                         {
-                            res = float.Parse(temp[i - 1]) + float.Parse(temp[i + 1]);
+                            res = double.Parse(temp[i - 1]) + double.Parse(temp[i + 1]);
                         }
                         if (temp[i] == "-")
                         {
-                            res = float.Parse(temp[i - 1]) - float.Parse(temp[i + 1]);
+                            res = double.Parse(temp[i - 1]) - double.Parse(temp[i + 1]);
                         }
                         temp[i] = res.ToString();
                         temp.RemoveAt(i - 1);
@@ -375,15 +418,13 @@ namespace Calculatrice
 
             }
 
-            return float.Parse(temp[0]);
+            return double.Parse(temp[0]);
         }
 
         private string evaluerParenthese(char[] var)
         {
             char[] tab = splitTab(var, 1, var.Count()-1);
             string varTemp = "";
-
-            power(ref tab);
 
             sqrt(ref tab);
 
@@ -396,6 +437,8 @@ namespace Calculatrice
             tan(ref tab);
 
             facto(ref tab);
+
+            power(ref tab);
 
             List<string> temp = new List<string>();
 
@@ -571,8 +614,6 @@ namespace Calculatrice
 
             char[] tableau = Entree.ToArray();
 
-            power(ref tableau);
-
             sqrt(ref tableau);
 
             exp(ref tableau);
@@ -584,6 +625,8 @@ namespace Calculatrice
             tan(ref tableau);
 
             facto(ref tableau);
+
+            power(ref tableau);
 
             string varTemp = "";
 
