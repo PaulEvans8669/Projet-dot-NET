@@ -23,7 +23,7 @@ Clic sur un item de l'historique : permet de réutiliser la formule ou le résul
   
 ### Touches Clavier :
 
-Le pad numérique doit être utilisé pour interagir avec la calculatrice.  
+Le __pad numérique__ doit être utilisé pour interagir avec la calculatrice.  
   
 s : sinus  
 c : cosinus  
