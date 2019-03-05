@@ -97,6 +97,10 @@ namespace Calculatrice
             }
             if (index <= 9)
             {
+                if (Saisie.Length > 0 && Saisie.ElementAt(Saisie.Length - 1) == ')')
+                {
+                    Saisie += "*";
+                }
                 Saisie += index.ToString();
             }
             switch (index)
@@ -235,6 +239,11 @@ namespace Calculatrice
             if (simpleEntries.Contains(buttonContent))
             {
 
+                if (isANumber(buttonContent.ElementAt(0)) && Saisie.Length > 0 && Saisie.ElementAt(Saisie.Length-1) == ')')
+                {
+                    Saisie += "*";
+                }
+
                 Saisie += buttonContent;
             }
             else
@@ -299,35 +308,37 @@ namespace Calculatrice
                 }
                 else
                 {
+                    if (Saisie.Length > 0) {
+                        char lastChar = Saisie.ElementAt(Saisie.Length - 1);
+                        if (!isAnOperator(lastChar) && lastChar != '(')
+                        {
+                            Saisie += "*";
+                        }
 
-                    if (Saisie.Length > 0 && !(isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) == '('))
-                    {
-                        Saisie += "*";
-                    }
-
-                    if (buttonContent.Equals("sin (s)"))
-                    {
-                        Saisie += "sin(";
-                    }
-                    else if (buttonContent.Equals("cos (c)"))
-                    {
-                        Saisie += "cos(";
-                    }
-                    else if (buttonContent.Equals("√ (r)"))
-                    {
-                        Saisie += "√(";
-                    }
-                    else if (buttonContent.Equals("exp (e)"))
-                    {
-                        Saisie += "exp(";
-                    }
-                    else if (buttonContent.Equals("ln (l)"))
-                    {
-                        Saisie += "ln(";
-                    }
-                    else if (buttonContent.Equals("tan (t)"))
-                    {
-                        Saisie += "tan(";
+                        if (buttonContent.Equals("sin (s)"))
+                        {
+                            Saisie += "sin(";
+                        }
+                        else if (buttonContent.Equals("cos (c)"))
+                        {
+                            Saisie += "cos(";
+                        }
+                        else if (buttonContent.Equals("√ (r)"))
+                        {
+                            Saisie += "√(";
+                        }
+                        else if (buttonContent.Equals("exp (e)"))
+                        {
+                            Saisie += "exp(";
+                        }
+                        else if (buttonContent.Equals("ln (l)"))
+                        {
+                            Saisie += "ln(";
+                        }
+                        else if (buttonContent.Equals("tan (t)"))
+                        {
+                            Saisie += "tan(";
+                        }
                     }
                 }
             }
@@ -395,14 +406,16 @@ namespace Calculatrice
 
         private bool Erase()
         {
+            string operation = Saisie.Replace("sin", "n").Replace("cos", "s").Replace("tan", "n").Replace("exp", "p").Replace("ln", "l");
             int length = Saisie.Length;
+
 
             if (length > 0)
             {
-                char avantDernierChar = Saisie.ElementAt(Saisie.Length - 1);
+                char avantDernierChar = operation.ElementAt(operation.Length - 1);
                 if (length > 1)
                 {
-                    avantDernierChar = Saisie.ElementAt(Saisie.Length - 2);
+                    avantDernierChar = operation.ElementAt(operation.Length - 2);
                 }
                 else
                 {
@@ -417,7 +430,7 @@ namespace Calculatrice
                     return true;
 
                 }
-                else if (length > 2 && avantDernierChar == 'n')
+                else if (length > 2 && avantDernierChar == 'l')
                 {
                     //"ln("
                     Saisie = Saisie.Substring(0, Saisie.Length - 3);
@@ -458,7 +471,7 @@ namespace Calculatrice
 
         public bool operationIsValid(string operation)
         {
-            operation = operation.Replace("sin", "n").Replace("cos", "s").Replace("tan", "t").Replace("exp", "p").Replace("ln", "n");
+            operation = operation.Replace("sin", "n").Replace("cos", "s").Replace("tan", "t").Replace("exp", "p").Replace("ln", "l");
             if (Saisie.ElementAt(0) == '+') //Si "+........"
             {
                 Saisie = Saisie.Substring(1);
@@ -504,9 +517,20 @@ namespace Calculatrice
                     cpt--;
                 }
             }
-            if (cpt != 0)
+            if (cpt < 0)
             {
                 return false;
+            }
+            else
+            {
+                if (cpt > 0)
+                {
+                    for(int i = 0; i<cpt; i++)
+                    {
+                        Saisie += ")";
+                        operation += ")";
+                    }
+                }
             }
             //fin vérification des parenthèses
 
