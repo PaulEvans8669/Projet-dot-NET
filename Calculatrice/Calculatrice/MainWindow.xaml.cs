@@ -23,7 +23,7 @@ namespace Calculatrice
         private string[] simpleEntries = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "-", "+", "/", "(", ")", "^", "!" };
 
         private Key[] validKeyslist = { Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4, Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9, Key.Divide, Key.Multiply, Key.Subtract, Key.Add, Key.Return, Key.Decimal, Key.D5, Key.OemOpenBrackets, Key.S, Key.C, Key.R, Key.E, Key.L, Key.T, Key.Oem8, Key.Oem6 };
-        
+
         private ObservableCollection<Operation> _listeOperations;
         public ObservableCollection<Operation> ListeOperations
         {
@@ -148,6 +148,7 @@ namespace Calculatrice
                             {
                                 MessageBox.Show("Formule invalide");
                                 backFromPopup = true;
+                                Saisie = "";
                             }
                         }
                         else
@@ -160,7 +161,7 @@ namespace Calculatrice
                     Saisie += ",";
                     break;
                 case 16:
-                    if (Saisie.Length > 0 && !isAnOperator(Saisie.ElementAt(Saisie.Length - 1)))
+                    if (Saisie.Length > 0 && !(isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) == '('))
                     {
                         Saisie += "*";
                     }
@@ -239,7 +240,7 @@ namespace Calculatrice
             if (simpleEntries.Contains(buttonContent))
             {
 
-                if (isANumber(buttonContent.ElementAt(0)) && Saisie.Length > 0 && Saisie.ElementAt(Saisie.Length-1) == ')')
+                if (isANumber(buttonContent.ElementAt(0)) && Saisie.Length > 0 && Saisie.ElementAt(Saisie.Length - 1) == ')')
                 {
                     Saisie += "*";
                 }
@@ -293,6 +294,7 @@ namespace Calculatrice
                         }
                         else
                         {
+                            Saisie = "";
                             MessageBox.Show("Formule invalide");
                             backFromPopup = true;
                         }
@@ -308,7 +310,7 @@ namespace Calculatrice
                 }
                 else
                 {
-                    if (Saisie.Length > 0 && (!isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) && Saisie.ElementAt(Saisie.Length - 1) != '('))
+                    if (Saisie.Length > 0 && (!isAnOperator(Saisie.ElementAt(Saisie.Length - 1)) || Saisie.ElementAt(Saisie.Length - 1) != '('))
                     {
                         Saisie += "*";
                     }
@@ -468,39 +470,6 @@ namespace Calculatrice
 
         public bool operationIsValid(string operation)
         {
-            operation = operation.Replace("sin", "n").Replace("cos", "s").Replace("tan", "t").Replace("exp", "p").Replace("ln", "l");
-            if (Saisie.ElementAt(0) == '+') //Si "+........"
-            {
-                Saisie = Saisie.Substring(1);
-                operation = Saisie; //retirer +
-            }
-            char firstChar = operation.ElementAt(0);
-            if (firstChar == '/' || firstChar == '*' || firstChar == '!' || firstChar == '.' || firstChar == ',')//si opération commence avec * ou / ou !
-            {
-                return false; //opération invalide
-            }
-            else
-            {
-                if (isANumber(firstChar)) //si premier élément est nombre
-                {
-                    operation = "+" + operation; // ajouter un + pour simplifier
-                }
-            }
-
-            if (operation.Length <= 2) //si taille <=1 AVEC le "+" en plus càd que operation = "+"
-            {
-                if (isANumber(operation.ElementAt(1)))
-                {
-                    return true;
-                }
-                return false; //operation invalide
-            }
-
-            char secondChar = operation.ElementAt(1);
-            if (!isANumber(secondChar) && secondChar != '(')
-            { //si élément apres le + de début n'est pas un chiffre
-                return false; //operation invalide
-            }
             //vérification nb de parenthèses
             int cpt = 0;
             foreach (char c in operation)
@@ -522,7 +491,7 @@ namespace Calculatrice
             {
                 if (cpt > 0)
                 {
-                    for(int i = 0; i<cpt; i++)
+                    for (int i = 0; i < cpt; i++)
                     {
                         Saisie += ")";
                         operation += ")";
@@ -530,6 +499,52 @@ namespace Calculatrice
                 }
             }
             //fin vérification des parenthèses
+
+            //retirer les parenthèses qui ne continnent rien
+            while (Saisie.Contains("()"))
+            {
+                Saisie = Saisie.Replace("()", "");
+                operation = operation.Replace("()", "");
+            }
+            if (String.IsNullOrEmpty(Saisie))
+            {
+                return false;
+            }
+
+            operation = operation.Replace("sin", "n").Replace("cos", "s").Replace("tan", "t").Replace("exp", "p").Replace("ln", "l");
+            if (Saisie.ElementAt(0) == '+') //Si "+........"
+            {
+                Saisie = Saisie.Substring(1);
+                operation = Saisie; //retirer +
+            }
+            char firstChar = operation.ElementAt(0);
+            if (firstChar == '/' || firstChar == '*' || firstChar == '!' || firstChar == '.' || firstChar == ',')//si opération commence avec * ou / ou !
+            {
+                return false; //opération invalide
+            }
+            else
+            {
+                if (isANumber(firstChar)) //si premier élément est nombre
+                {
+                    operation = "+" + operation; // ajouter un + pour simplifier
+                }
+            }
+
+            if (operation.Length <= 2) //si taille == 1 AVEC le "+" en plus càd que operation = "+"
+            {
+                if (isANumber(operation.ElementAt(1)))
+                {
+                    return true;
+                }
+                return false; //operation invalide
+            }
+
+            //char secondChar = operation.ElementAt(1);
+            //if (secondChar == '*' ||secondChar == '/' ||secondChar == '!')
+            //{ //si élément apres le + de début n'est pas un chiffre
+            //    return false; //operation invalide
+            //}
+
 
             for (int i = 2; i < operation.Length - 1; i++)
             {
