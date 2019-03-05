@@ -178,7 +178,7 @@ namespace Calculatrice
                             }
                         }
                         char[] temp = splitTab(tab, k, i - 1);
-                        varTemp1 = evaluerParenthese(temp);//(2+3*5-6)!
+                        varTemp1 = evaluerParenthese(temp);
                     }
                     else
                     {
@@ -273,7 +273,7 @@ namespace Calculatrice
             for (int i = 0; i < tab.Length; i++)
             {
 
-                if (tab[i] == 's')
+                if (tab[i] == 's' && tab[i+1]=='i')
                 {
 
                     int x = parenthese(ref tab, i + 3);
@@ -503,6 +503,56 @@ namespace Calculatrice
                     string s = evaluerParenthese(temp);
                     tab = concatTab(tab, s, i, x);
                 }
+                else if (tab[i] == 'c')
+                {
+                    int x = parenthese(ref tab, i + 3);
+                    char[] temp = splitTab(tab, i + 3, x);
+                    string varTemp = evaluerParenthese(temp);
+                    Console.WriteLine(Math.Cos(2));
+                    string value = Math.Cos(DegreeToRadian(double.Parse(varTemp))).ToString();
+                    tab = concatTab(tab, value, i, x);
+                }
+                else if (tab[i] == 't')
+                {
+                    int x = parenthese(ref tab, i + 3);
+                    char[] temp = splitTab(tab, i + 3, x);
+                    string varTemp = evaluerParenthese(temp);
+                    string value = Math.Tan(DegreeToRadian(double.Parse(varTemp))).ToString();
+                    tab = concatTab(tab, value, i, x);
+                }
+                else if (tab[i] == 's')
+                {
+                    int x = parenthese(ref tab, i + 3);
+                    char[] temp = splitTab(tab, i + 3, x);
+                    string varTemp = evaluerParenthese(temp);
+                    Console.WriteLine(Math.Sin(2));
+                    string value = Math.Sin(DegreeToRadian(double.Parse(varTemp))).ToString();
+                    tab = concatTab(tab, value, i, x);
+                }
+                else if (tab[i] == 'e')
+                {
+                    int x = parenthese(ref tab, i + 3);
+                    char[] temp = splitTab(tab, i + 3, x);
+                    string varTemp = evaluerParenthese(temp);
+                    string value = Math.Exp(double.Parse(varTemp)).ToString();
+                    tab = concatTab(tab, value, i, x);
+                }
+                else if (tab[i] == 'l')
+                {
+                    int x = parenthese(ref tab, i + 2);
+                    char[] temp = splitTab(tab, i + 2, x);
+                    string varTemp = evaluerParenthese(temp);
+                    string value = Math.Log10(double.Parse(varTemp)).ToString();
+                    tab = concatTab(tab, value, i, x);
+                }
+                else if (tab[i] == '√')
+                {
+                    int x = parenthese(ref tab, i + 1);
+                    char[] temp = splitTab(tab, i + 1, x);
+                    string varTemp = evaluerParenthese(temp);
+                    string value = Math.Sqrt(double.Parse(varTemp)).ToString();
+                    tab = concatTab(tab, value, i, x);
+                }
                 else if (tab[i] == ')' && autreParenthese == false)
                 {
                     return i;
@@ -526,9 +576,9 @@ namespace Calculatrice
 
             exp(ref tableau);
 
-            cos(ref tableau);
-
             sin(ref tableau);
+
+            cos(ref tableau);
 
             tan(ref tableau);
 
