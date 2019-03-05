@@ -461,7 +461,7 @@ namespace Calculatrice
                 operation = Saisie; //retirer +
             }
             char firstChar = operation.ElementAt(0);
-            if (firstChar == '/' || firstChar == '*' || firstChar == '!')//si opération commence avec * ou / ou !
+            if (firstChar == '/' || firstChar == '*' || firstChar == '!' || firstChar == '.' || firstChar == ',')//si opération commence avec * ou / ou !
             {
                 return false; //opération invalide
             }
@@ -520,7 +520,7 @@ namespace Calculatrice
                 }
                 else if (c == '-')
                 {
-                    if (!(previousChar == ')' || isANumber(previousChar) || nextChar == '(' || isANumber(previousChar)))
+                    if (!(previousChar == ')' || previousChar == '(' || isANumber(previousChar) || nextChar == '(' || isANumber(previousChar)))
                     {
                         return false;
                     }
@@ -562,7 +562,7 @@ namespace Calculatrice
                 }
                 else if (c == ')')
                 {
-                    if (!(isAnOperator(nextChar) || isANumber(nextChar) || isANumber(previousChar) || previousChar == ')' || nextChar == ')'))
+                    if (!(isAnOperator(nextChar) || isANumber(nextChar) || isANumber(previousChar) || previousChar == ')' || nextChar == ')' || nextChar == '-'))
                     {
                         return false;
                     }
