@@ -139,7 +139,7 @@ namespace Calculatrice
                                 {
 
                                     Console.WriteLine(ex.ToString());
-                                    MessageBox.Show("Formule invalide");
+                                    MessageBox.Show("Erreur de Calcul");
                                     backFromPopup = true;
                                 }
 
@@ -287,7 +287,7 @@ namespace Calculatrice
                             catch (Exception ex)
                             {
                                 Console.WriteLine(ex.ToString());
-                                MessageBox.Show("Formule invalide");
+                                MessageBox.Show("Erreur de Calcul");
                                 backFromPopup = true;
                             }
                         }
@@ -455,7 +455,7 @@ namespace Calculatrice
 
         private bool isAnOperator(char c)
         {
-            return (c == '+' || c == '-' || c == '*' || c == '/');
+            return (c == '+' || c == '-' || c == '*' || c == '/' || c == '^');
         }
 
         private bool isANumber(char c)
